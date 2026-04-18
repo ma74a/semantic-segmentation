@@ -24,11 +24,11 @@ class DoubleConv(nn.Module):
 class DecoderBlock(nn.Module):
     def __init__(self, in_channels, skip_connections, out_channels):
         super(DecoderBlock, self).__init__()
-        self.up_sampling = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2)
-        self.conv_block = DoubleConv(out_channels+skip_connections, out_channels)
+        self.up = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2)
+        self.conv = DoubleConv(out_channels+skip_connections, out_channels)
 
     def forward(self, x, skip=None):
-        x = self.up_sampling(x)
+        x = self.up(x)
 
         if skip is not None:
             # Padding in case the input dimensions are not perfectly divisible by 2
@@ -41,7 +41,7 @@ class DecoderBlock(nn.Module):
             # Concatenate along the channel dimension
             x = torch.cat([skip, x], dim=1)
 
-        return self.conv_block(x)
+        return self.conv(x)
     
 
 
@@ -68,7 +68,7 @@ class ResNetUNet(nn.Module):
         self.up1 = DecoderBlock( 64,  64,  64)
         self.up0 = DecoderBlock(64, 0, 64)
 
-        self.out_layer = nn.Conv2d(64, num_classes, kernel_size=1)
+        self.final_conv = nn.Conv2d(64, num_classes, kernel_size=1)
 
     def forward(self, x):
         e0 = self.encoder0(x)
@@ -83,4 +83,4 @@ class ResNetUNet(nn.Module):
         d = self.up1(d, skip=e0)
         d = self.up0(d)
 
-        return self.out_layer(d)
+        return self.final_conv(d)
