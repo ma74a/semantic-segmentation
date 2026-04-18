@@ -4,6 +4,7 @@ from torchvision.transforms import transforms
 from PIL import Image
 import os
 
+
 class Config:
     # Paths
     train_val_images = "/home/etman/etman/python/projects/semantic_segmentation_project/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/ImageSets/Segmentation"

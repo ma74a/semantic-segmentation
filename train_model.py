@@ -6,6 +6,7 @@ from torch import optim
 from torch.nn import CrossEntropyLoss
 
 from baseline_one.unet.unet_model import UNet
+from baseline_one.pretrained_model.resnetunet_model import ResNetUNet
 from src.load_data import load_data
 from src.training import train_and_val
 from utils.config import Config
@@ -13,8 +14,11 @@ from utils.visualize import plot_losses
 
 def main():
     train_loader, val_loader = load_data()
-
-    model = UNet(in_channels=Config.NUM_CHANNELS, num_classes=Config.NUM_CLASSES)
+    # for images, masks in train_loader:
+    #     print("images:", images.shape)
+    #     print("masks:", masks.shape)
+    #     break
+    model = ResNetUNet(num_classes=Config.NUM_CLASSES)
     model.to(Config.DEVICE)
     optimizer = optim.Adam(model.parameters(), lr=Config.LR)
     critirion = CrossEntropyLoss(ignore_index=255)
