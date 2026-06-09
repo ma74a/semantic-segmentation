@@ -6,11 +6,13 @@ from torch import optim
 from torch.nn import CrossEntropyLoss
 
 from baseline_one.pretrained_model.resnetunet_model import ResNetUNet
+from baseline_two.resnet_deeplab import ResnetDeeplab
 from baseline_one.unet.unet_model import UNet
 from utils.visualize import plot_losses
 from src.training import train_and_val
 from src.load_data import load_data
 from utils.config import Config
+from utils.helper import DiceLoss
 
 def main():
     train_loader, val_loader = load_data()
@@ -18,16 +20,18 @@ def main():
     #     print("images:", images.shape)
     #     print("masks:", masks.shape)
     #     break
-    model = ResNetUNet(num_classes=Config.NUM_CLASSES)
+    model = ResnetDeeplab(num_classes=Config.NUM_CLASSES)
     model.to(Config.DEVICE)
     optimizer = optim.Adam(model.parameters(), lr=Config.LR)
-    critirion = CrossEntropyLoss(ignore_index=255)
+    cl_loss = CrossEntropyLoss(ignore_index=255)
+    dice_loss = DiceLoss(num_classes=Config.NUM_CLASSES)
 
     model, train_losses, val_losses = train_and_val(model,
                                                     train_loader,
                                                     val_loader,
                                                     optimizer,
-                                                    critirion,
+                                                    cl_loss,
+                                                    dice_loss,
                                                     Config.DEVICE,
                                                     Config.EPOCHS)
     
