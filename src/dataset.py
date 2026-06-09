@@ -1,12 +1,18 @@
 import torch
 from torch.utils.data import Dataset
+from torchvision import transforms as T
 
+from typing import Tuple
 from PIL import Image
 import numpy as np
 import os
 
 class SegmentationDataset(Dataset):
-    def __init__(self, all_images, seg_classes, images_path_file, transforms=None):
+    def __init__(self, all_images: str,
+                    seg_classes: str,
+                    images_path_file: str, 
+                    transforms: T=None
+                    ) -> None:
         self.all_images = all_images
         self.seg_classes = seg_classes
         self.images_path_file = images_path_file
@@ -24,10 +30,10 @@ class SegmentationDataset(Dataset):
             self.images_paths.append(img_path)
             self.images_masks.append(img_mask_path)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.images_paths)
     
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
         img = self.images_paths[idx]
         mask = self.images_masks[idx]
 
