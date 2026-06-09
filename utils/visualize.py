@@ -12,7 +12,7 @@ def plot_losses(train_losses: List, val_losses: List) -> None:
     plt.ylabel('Loss')
     plt.title('Training and Validation Loss')
     plt.legend()
-    plt.savefig()
+    plt.savefig("loss_plot.png")
 
 
 def show_batch(train_loader: DataLoader) -> None:
