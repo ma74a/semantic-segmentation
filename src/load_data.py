@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from torch.utils.data import DataLoader, random_split
 from typing import Tuple
 
-from dataset import SegmentationDataset
+from .dataset import SegmentationDataset
 from utils.config import Config
 
 def load_data() -> Tuple[DataLoader, DataLoader]:
