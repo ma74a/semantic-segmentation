@@ -1,17 +1,20 @@
 import torch
 import torch.nn as nn
+from torch.optim import Optimizer
+from torch.utils.data import DataLoader
 
 from tqdm import tqdm
+from typing import Tuple, List
 
 def train_and_val(
-        model,
-        train_loader,
-        val_loader,
-        optimizer,
-        critirion,
+        model: nn.Module,
+        train_loader: DataLoader,
+        val_loader: DataLoader,
+        optimizer: Optimizer,
+        critirion: nn.CrossEntropyLoss,
         device="cpu",
-        epochs=30
-    ):
+        epochs: int=30
+    ) -> Tuple[nn.Module, List, List]:
     train_losses = []
     val_losses = []
     best_val_loss = float("inf")

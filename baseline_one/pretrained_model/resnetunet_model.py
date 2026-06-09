@@ -5,7 +5,7 @@ from torchvision import models
 
 
 class DoubleConv(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels: int, out_channels: int):
         super(DoubleConv, self).__init__()
         self.conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False),
@@ -16,7 +16,7 @@ class DoubleConv(nn.Module):
             nn.ReLU()
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.conv(x)
     
 
@@ -70,7 +70,7 @@ class ResNetUNet(nn.Module):
 
         self.final_conv = nn.Conv2d(64, num_classes, kernel_size=1)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         e0 = self.encoder0(x)
         e1 = self.encoder1(self.pool(e0))
         e2 = self.encoder2(e1)

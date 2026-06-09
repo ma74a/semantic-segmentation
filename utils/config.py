@@ -1,5 +1,5 @@
 import torch
-from torchvision.transforms import transforms
+from torchvision import transforms as T
 
 from PIL import Image
 import os
@@ -27,16 +27,16 @@ class Config:
     # Device
     DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-    image_transforms = transforms.Compose([
-    transforms.Resize((IMG_SIZE, IMG_SIZE)),
-    transforms.ToTensor(),
-    # transforms.Normalize(
+    image_transforms = T.Compose([
+    T.Resize((IMG_SIZE, IMG_SIZE)),
+    T.ToTensor(),
+    # T.Normalize(
     #     mean=[0.485, 0.456, 0.406],
     #     std=[0.229, 0.224, 0.225]
     # )
     ])
-    mask_transforms = transforms.Compose([
-        transforms.Resize((IMG_SIZE, IMG_SIZE))
+    mask_transforms = T.Compose([
+        T.Resize((IMG_SIZE, IMG_SIZE))
     ])
     TRANSFORMS_DICT = {
         "data": image_transforms,
