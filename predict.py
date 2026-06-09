@@ -4,15 +4,16 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 from baseline_one.unet.unet_model import UNet
+from baseline_one.pretrained_model.resnetunet_model import ResNetUNet
 from utils.config import Config
 
 
-model = UNet(in_channels=Config.NUM_CHANNELS, num_classes=Config.NUM_CLASSES)
-checkpoint = torch.load("./checkpoints/model1.pth", map_location=torch.device('cpu'))
+model = ResNetUNet(num_classes=Config.NUM_CLASSES)
+checkpoint = torch.load("./checkpoints/best_model_v1.pt", map_location=torch.device('cpu'))
 model.load_state_dict(checkpoint["model_state_dict"])
 model.eval()
 
-img_path = "./test/2007_000256.jpg"
+img_path = "./testing/2007_000256.jpg"
 img = Image.open(img_path).convert("RGB")
 
 img = Config.TRANSFORMS_DICT["data"](img)
