@@ -11,7 +11,8 @@ def train_and_val(
         train_loader: DataLoader,
         val_loader: DataLoader,
         optimizer: Optimizer,
-        critirion: nn.CrossEntropyLoss,
+        ce_loss: nn.CrossEntropyLoss,
+        dice_loss: nn.Module,
         device="cpu",
         epochs: int=30
     ) -> Tuple[nn.Module, List, List]:
@@ -27,7 +28,7 @@ def train_and_val(
 
             optimizer.zero_grad()
             output = model(images)
-            loss = critirion(output, masks)
+            loss = ce_loss(output, masks) + dice_loss(output, masks)
             loss.backward()
             optimizer.step()
 
@@ -43,7 +44,7 @@ def train_and_val(
                 images, masks = images.to(device), masks.to(device)
                 
                 output = model(images)
-                loss = critirion(output, masks)
+                loss = ce_loss(output, masks) + dice_loss(output, masks)
 
                 val_loss += loss.item()
 
@@ -56,7 +57,7 @@ def train_and_val(
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     'epoch': epoch,
-                    }, "model1.pth")
+                    }, "../checkpoints/model1.pth")
 
         print(f"epoch: {epoch+1} | train_loss: {avg_train_loss} | val_loss: {avg_val_loss}")
 
