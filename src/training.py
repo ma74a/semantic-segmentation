@@ -24,6 +24,7 @@ def train_and_val(
         model.train()
         for images, masks in tqdm(train_loader):
             images, masks = images.to(device), masks.to(device)
+
             optimizer.zero_grad()
             output = model(images)
             loss = critirion(output, masks)
@@ -40,6 +41,7 @@ def train_and_val(
         with torch.no_grad():
             for images, masks in tqdm(val_loader):
                 images, masks = images.to(device), masks.to(device)
+                
                 output = model(images)
                 loss = critirion(output, masks)
 
@@ -54,10 +56,8 @@ def train_and_val(
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     'epoch': epoch,
-                    'train_loss': train_loss,
-                    'valid_loss': val_loss,
                     }, "model1.pth")
 
-        print(f"epoch: {epoch+1} | train_loss: {avg_val_loss} | val_loss: {avg_val_loss}")
+        print(f"epoch: {epoch+1} | train_loss: {avg_train_loss} | val_loss: {avg_val_loss}")
 
     return model, train_losses, val_losses
