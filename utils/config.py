@@ -7,12 +7,12 @@ import os
 
 class Config:
     # Paths
-    train_val_images = "/home/etman/etman/python/projects/semantic_segmentation_project/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/ImageSets/Segmentation"
-    TRAIN_VAL_IMAGES = "/home/etman/etman/python/projects/semantic_segmentation_project/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/ImageSets/Segmentation/trainval.txt"
+    train_val_images = "/home/etman/etman/projects/semantic-segmentation/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/ImageSets/Segmentation"
+    TRAIN_VAL_IMAGES = "/home/etman/etman/projects/semantic-segmentation/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/ImageSets/Segmentation/trainval.txt"
     TRAIN_IMAGES_PATHS = os.path.join(train_val_images, "train.txt")
     VAL_IMAGES_PATHS = os.path.join(train_val_images, "val.txt")
-    ALL_IMAGES = "/home/etman/etman/python/projects/semantic_segmentation_project/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/JPEGImages"
-    SEG_CLASSES = "/home/etman/etman/python/projects/semantic_segmentation_project/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/SegmentationClass"
+    ALL_IMAGES = "/home/etman/etman/projects/semantic-segmentation/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/JPEGImages"
+    SEG_CLASSES = "/home/etman/etman/projects/semantic-segmentation/pascal_vac_2012/VOC2012_train_val/VOC2012_train_val/SegmentationClass"
 
     # Hyperparamters
     EPOCHS = 50
