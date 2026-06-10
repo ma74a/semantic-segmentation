@@ -20,6 +20,7 @@ The project features:
 - ✅ Automatic best-model checkpointing
 - ✅ Loss curve visualization saved to `loss_plot.png`
 - ✅ Single-image inference pipeline
+- ✅ **Streamlit web app** for interactive image segmentation
 
 ---
 
@@ -83,13 +84,14 @@ A hybrid model using a **pretrained ResNet34 encoder** paired with a custom UNet
 ---
 
 ### 3. DeepLabV3 with ResNet50 (Fine-tuned) ← *Currently Active*
-> `baseline_two/`
+> `baseline_two/resnet_deeplab.py`
 
 The strongest baseline — a **pretrained DeepLabV3** model with ResNet50 backbone loaded from `torchvision`. Only the final classification head is replaced and fine-tuned for 21 VOC classes.
 
 ```python
 # Only this layer is trained from scratch:
-model.classifier[4] = nn.Conv2d(256, num_classes, kernel_size=1)
+in_channels = model.classifier[4].in_channels
+model.classifier[4] = nn.Conv2d(in_channels, num_classes, kernel_size=1)
 ```
 
 ---
@@ -107,7 +109,7 @@ semantic-segmentation/
 │       └── resnetunet_model.py    # ResNet34 + UNet decoder
 │
 ├── 📂 baseline_two/
-│   └── resnet_deeplap.py          # DeepLabV3 fine-tuning wrapper
+│   └── resnet_deeplab.py          # DeepLabV3 fine-tuning wrapper
 │
 ├── 📂 src/
 │   ├── dataset.py                 # SegmentationDataset (PyTorch Dataset)
@@ -118,6 +120,9 @@ semantic-segmentation/
 │   ├── config.py                  # Central config (paths, hyperparameters, transforms)
 │   ├── helper.py                  # DiceLoss implementation
 │   └── visualize.py               # Loss curves & batch visualization
+│
+├── 📂 app/
+│   └── app.py                     # 🌐 Streamlit GUI for interactive inference
 │
 ├── 📂 testing/
 │   └── 2007_000256.jpg            # Sample test image
@@ -215,6 +220,7 @@ pip install -r requirements.txt
 | `numpy` | 1.23.0 | Array operations |
 | `matplotlib` | 3.5.0 | Plotting loss curves |
 | `tqdm` | 4.64.0 | Training progress bars |
+| `streamlit` | 1.0.0 | Interactive web app UI |
 
 </details>
 
@@ -238,7 +244,7 @@ model = UNet(in_channels=Config.NUM_CHANNELS, num_classes=Config.NUM_CLASSES)
 model = ResNetUNet(num_classes=Config.NUM_CLASSES)
 
 # Option C — DeepLabV3 ResNet50 fine-tuned (best results) ← currently active
-model = ResnetDeeplapV3(num_classes=Config.NUM_CLASSES)
+model = ResnetDeeplab(num_classes=Config.NUM_CLASSES)
 ```
 
 ### Step 3 — Run training
@@ -250,7 +256,7 @@ python train_model.py
 **What happens during training:**
 1. `trainval.txt` is loaded and randomly split (80% train / 20% val)
 2. Each epoch computes `CE Loss + Dice Loss` on both splits
-3. If val loss improves → checkpoint saved to `checkpoints/model1.pth`
+3. If val loss improves → checkpoint saved to `checkpoints/model1.pth` as a full state dict `{model_state_dict, optimizer_state_dict, epoch}`
 4. After all epochs → `loss_plot.png` is saved to the project root
 
 ### Training Output Example
@@ -272,7 +278,7 @@ Run inference on a single image:
 python predict.py
 ```
 
-The script loads `checkpoints/best_model_v1.pt` using `ResNetUNet` and displays a side-by-side comparison:
+The script loads `checkpoints/resnetunet_model_v1.pt` using `ResNetUNet` and displays a side-by-side comparison:
 
 ```
 ┌─────────────────┬─────────────────────┐
@@ -287,7 +293,26 @@ To test on your own image, change the path in `predict.py`:
 img_path = "./testing/your_image.jpg"
 ```
 
-> ⚠️ Make sure the model class in `predict.py` matches the checkpoint you trained. Currently `predict.py` loads `ResNetUNet` while `train_model.py` trains `ResnetDeeplapV3`.
+> ⚠️ Make sure the model class in `predict.py` matches the checkpoint you trained. Currently `predict.py` loads `ResNetUNet` while `train_model.py` trains `ResnetDeeplab`.
+
+---
+
+## 🌐 Streamlit App
+
+An interactive web UI is available for running inference without writing any code.
+
+```bash
+streamlit run app/app.py
+```
+
+The app will open in your browser and lets you:
+- **Upload** a `.jpg` or `.png` image
+- **View** the original image
+- **See** the predicted segmentation mask side-by-side
+
+The app uses the `ResNetUNet` model and loads weights from `checkpoints/resnetunet_model_v1.pt`.
+
+> ⚠️ Make sure `streamlit` is installed (`pip install streamlit`) and that the checkpoint path inside `app/app.py` points to your trained weights.
 
 ---
 
