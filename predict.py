@@ -10,12 +10,12 @@ from utils.config import Config
 
 
 def main():
-    model = ResnetDeeplab(num_classes=Config.NUM_CLASSES)
-    checkpoint = torch.load("./checkpoints/model_v1.pt", map_location=torch.device('cpu'))
+    model = ResNetUNet(num_classes=Config.NUM_CLASSES)
+    checkpoint = torch.load("./checkpoints/resnetunet_model_v1.pt", map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint)
     model.eval()
 
-    img_path = "./testing/2007_000256.jpg"
+    img_path = "./testing/people1.jpg"
     img = Image.open(img_path).convert("RGB")
 
     img = Config.TRANSFORMS_DICT["data"](img)
