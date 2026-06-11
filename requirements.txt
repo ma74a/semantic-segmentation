@@ -4,6 +4,6 @@ Pillow>=9.0.0
 numpy>=1.23.0
 matplotlib>=3.5.0
 tqdm>=4.64.0
-
+streamlit>=1.58.0
 
 
